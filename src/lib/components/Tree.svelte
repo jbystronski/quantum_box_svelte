@@ -3,7 +3,7 @@
 
 	export let data,
 		indent: number = 20,
-		itemHeight: number = 100,
+		itemHeight: number = 40,
 		containerHeight: number = 600,
 		containerWidth: number = 300,
 		Item: ConstructorOfATypedSvelteComponent,

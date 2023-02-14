@@ -71,7 +71,7 @@
 		data={root}
 		Item={TreeItem}
 		containerHeight={700}
-		itemHeight={150}
+		itemHeight={40}
 		defaultOpen={true}
 	/>
 </div>

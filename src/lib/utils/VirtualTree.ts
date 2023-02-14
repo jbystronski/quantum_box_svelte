@@ -81,12 +81,11 @@ export class Tree<K, V> {
 
 export class VirtualTree extends VirtualComponent {
 	tree: Tree;
-	containerHeight = 500;
-	itemHeight = 100;
+
 	height = 0;
 	defaultOpen = false;
 
-	constructor(data: App.DataObject[], containerHeight = 500, itemHeight = 50, defaultOpen = false) {
+	constructor(data: App.DataObject[], containerHeight = 500, itemHeight = 40, defaultOpen = false) {
 		super(containerHeight, itemHeight);
 		this.create(data);
 		this.defaultOpen = defaultOpen;
