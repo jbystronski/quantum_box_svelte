@@ -10,18 +10,13 @@
 	import DefaultItem from '$lib/components/DefaultItem.svelte';
 
 	let lastGridKey = 301;
-
-	let gridData;
-
 	const cb = (entry, index) => {
 		entry['key'] = index;
 
 		return entry;
 	};
 
-	onMount(async () => {
-		gridData = createOneLevelData(0, 300, cb);
-	});
+	let gridData = createOneLevelData(0, 300, cb);
 
 	let listData = createOneLevelData(0, 300, cb);
 
@@ -41,36 +36,34 @@
 			})}
 		data={listData}
 		containerHeight={700}
-		containerWidth={600}
 		itemHeight={50}
 		treshold={0.95}
 	/>
 </div>
 
 <div class="gridWrapper wrapper">
-	{#if gridData}
-		<Grid
-			Item={DefaultItem}
-			data={gridData}
-			containerHeight={700}
-			containerWidth={470}
-			rowItems={3}
-			itemWidth={150}
-			itemHeight={150}
-			treshold={0.9}
-			nextData={() =>
-				new Promise((resolve, reject) => {
-					resolve(createOneLevelData(lastGridKey, lastGridKey + 150, cb));
-					lastGridKey = lastGridKey + 150;
-				})}
-			maxFeeds={10}
-		/>
-	{/if}
+	<Grid
+		Item={DefaultItem}
+		data={gridData}
+		containerHeight={700}
+		containerWidth={470}
+		rowItems={3}
+		itemWidth={150}
+		itemHeight={150}
+		treshold={0.9}
+		nextData={() =>
+			new Promise((resolve, reject) => {
+				resolve(createOneLevelData(lastGridKey, lastGridKey + 150, cb));
+				lastGridKey = lastGridKey + 150;
+			})}
+		maxFeeds={10}
+	/>
+
 	<Tree
 		indent={20}
 		data={root}
 		Item={TreeItem}
-		containerHeight={700}
+		containerHeight={500}
 		itemHeight={40}
 		defaultOpen={true}
 	/>
@@ -78,7 +71,7 @@
 
 <style>
 	.listWrapper {
-		width: 600px;
+		width: 300px;
 	}
 
 	.gridWrapper {
