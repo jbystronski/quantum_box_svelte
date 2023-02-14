@@ -1,6 +1,6 @@
 {
 	"name": "-quantum-box-svelte",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"author": "jbystronski",
 	"description": "Data virtualization library for Svelte",
 	"repository": "jbystronski/quantum_box_svelte",
