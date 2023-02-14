@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { createOneLevelData, createManyLevelData } from '../tests/fixtures/data';
+	import { createOneLevelData, createManyLevelData } from '../lib/tests/fixtures/data';
 	import Grid from '$lib/components/Grid.svelte';
 	import List from '$lib/components/List.svelte';
 	import { Tree } from '../lib/index';
