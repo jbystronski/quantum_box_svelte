@@ -26,8 +26,6 @@
 		tree.toggle(id);
 		height = tree.height;
 		outputData = tree.parse();
-
-		console.log(outputData);
 	}
 </script>
 
