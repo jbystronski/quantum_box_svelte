@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { VirtualList } from '$lib/utils/VirtualList';
 
-	export let data,
-		itemHeight: number = 100,
-		containerHeight: number = 600,
-		containerWidth: number = 300,
-		nextData: App.NextData = () => [],
-		Item: ConstructorOfATypedSvelteComponent,
-		treshold = 0,
-		maxFeeds = false;
+	export let data;
+
+	export let itemHeight: number = 100;
+	export let containerHeight: number = 600;
+	export let containerWidth: number = 300;
+	export let nextData: App.NextData = () => [];
+	export let Item: ConstructorOfATypedSvelteComponent;
+	export let treshold = 0;
+	export let maxFeeds = false;
 
 	const list = new VirtualList(
 		data.slice(),
@@ -36,7 +37,6 @@
 	bind:this={container}
 	on:scroll={handleScroll}
 	style:height={containerHeight + 'px'}
-	style:width={containerWidth + 'px'}
 >
 	{#if outputData.length}
 		<ul class="container" style:height={totalHeight ? totalHeight + 'px' : 'inherit'}>
@@ -57,6 +57,7 @@
 <style>
 	.wrapper {
 		overflow: auto;
+		width: 100%;
 	}
 
 	.container {

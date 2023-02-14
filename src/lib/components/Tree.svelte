@@ -17,10 +17,8 @@
 	$: container && container.dispatchEvent(new CustomEvent('scroll'));
 
 	let height = tree.height;
-	let position: number;
 
 	async function handleScroll(ev: App.Ev) {
-		position = tree.position;
 		outputData = tree.getChunk(ev);
 	}
 
@@ -28,6 +26,8 @@
 		tree.toggle(id);
 		height = tree.height;
 		outputData = tree.parse();
+
+		console.log(outputData);
 	}
 </script>
 
@@ -44,8 +44,8 @@
 					class="item"
 					style:height={tree.itemHeight + 'px'}
 					style:max-height={tree.itemHeight + 'px'}
-					style:top={position + i * tree.itemHeight + 'px'}
-					style:margin-left={indent * item.nestingLevel + 'px'}
+					style:top={item.tempIndex * tree.itemHeight + 'px'}
+					style:padding-left={indent * item.nestingLevel + 'px'}
 				>
 					<svelte:component
 						this={Item}
@@ -73,5 +73,6 @@
 	.item {
 		width: 100%;
 		position: absolute;
+		box-sizing: border-box;
 	}
 </style>

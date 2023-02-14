@@ -1,16 +1,16 @@
 <script lang="ts" type="module">
 	import { VirtualGrid } from '$lib/utils/VirtualGrid';
 
-	export let data,
-		itemHeight: number = 50,
-		itemWidth: number = 50,
-		containerHeight: number = 600,
-		containerWidth: number = 200,
-		nextData: App.NextData = () => [],
-		Item: ConstructorOfATypedSvelteComponent,
-		rowItems: number = 4,
-		treshold: number = 0,
-		maxFeeds = false;
+	export let data;
+	export let itemHeight: number = 50;
+	export let itemWidth: number = 50;
+	export let containerHeight: number = 600;
+	export let containerWidth = 400;
+	export let nextData: App.NextData = () => [];
+	export let Item: ConstructorOfATypedSvelteComponent;
+	export let rowItems: number = 4;
+	export let treshold: number = 0;
+	export let maxFeeds = false;
 
 	const grid = new VirtualGrid(
 		data.slice(),
@@ -23,9 +23,9 @@
 		maxFeeds
 	);
 
-	let outputData: App.DataObject[] = [],
-		container: HTMLDivElement,
-		totalHeight: number;
+	let outputData: App.DataObject[] = [];
+	let container: HTMLDivElement;
+	let totalHeight: number;
 
 	$: container && container.dispatchEvent(new CustomEvent('scroll'));
 
