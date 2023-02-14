@@ -32,7 +32,7 @@ export const createManyLevelData = (
 	for (let i = start; i <= end; i++) {
 		const data: TreeNode = {
 			value: i,
-			id: currentDepth + '-' + i,
+
 			children: []
 		};
 
