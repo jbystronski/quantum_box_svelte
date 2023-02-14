@@ -2,45 +2,34 @@ import { VirtualComponent } from './VirtualComponent';
 
 export class Node implements App.Tree.Node.Props {
 	readonly id: App.Tree.Node.Props['id'] = null;
-	readonly parentAddr: App.Tree.Node.Props['addr'] = [];
-	readonly addr: App.Tree.Node.Props['addr'] = [];
-
+	readonly parentId: App.Tree.Node.Id;
+	nestingLevel: number;
 	open: App.Tree.Node.Props['open'] = false;
 	value: App.Tree.Node.Props['value'] = null;
 	children: App.Tree.Node.Props['children'] = [];
-	top: 0;
 
 	constructor(
 		id: App.Tree.Node.Props['id'],
-		parentAddr: App.Tree.Node.Props['addr'],
+		parentId: App.Tree.Node.Props['id'],
+		nestingLevel: number,
 		value: App.Tree.Node.Props['value'],
-		open: false,
-		top: 0
+		open: boolean
 	) {
 		this.id = id;
-		this.parentAddr = parentAddr;
-		this.addr = [...parentAddr, id];
+		this.parentId = parentId;
+		this.nestingLevel = nestingLevel;
 		this.value = value;
 		this.open = open;
-		this.top = top;
 	}
 
 	get isLeaf() {
 		return this.children.length === 0;
 	}
-
-	get parentId() {
-		return this.parentAddr.reverse()[0];
-	}
-
-	get nestingLevel() {
-		return this.parentAddr?.length - 1;
-	}
 }
 
 export class Tree<K, V> {
-	private map: Array<K> = [];
-	private storage = new Map<K, V>();
+	map: Array<K> = [];
+	storage = new Map<K, V>();
 
 	remove(key: K): boolean {
 		this.remap(key, 1);
@@ -75,7 +64,13 @@ export class Tree<K, V> {
 	}
 
 	range(start: number, end: number) {
-		return this.map.slice(start, end).map((key) => this.get(key));
+		let i = start;
+		return this.map.slice(start, end).map((key) => {
+			const item = this.get(key);
+			item['tempIndex'] = i;
+			i++;
+			return item;
+		});
 	}
 }
 
@@ -87,48 +82,41 @@ export class VirtualTree extends VirtualComponent {
 
 	constructor(data: App.DataObject[], containerHeight = 500, itemHeight = 40, defaultOpen = false) {
 		super(containerHeight, itemHeight);
-		this.create(data);
+		this.tree = new Tree();
 		this.defaultOpen = defaultOpen;
+
+		this.attachNodes(0 + '', null, 0, data.value, this.defaultOpen, data.children);
+
 		this.height = this.tree.size;
 	}
 
-	filterIds(data) {
-		return data.map((c) => c.id);
+	attachNodes(id, parentId, nestingLevel, value, open, children) {
+		const node = new Node(id, parentId, nestingLevel, value, open);
+
+		this.tree.set(node.id, node);
+
+		if (children && children.length) {
+			node.children = children.map((child, i) =>
+				this.attachNodes(id + '-' + i, id, nestingLevel + 1, child.value, open, child.children)
+			);
+		}
+
+		return node;
 	}
 
-	create(data) {
-		this.tree = new Tree();
-		const root = new Node(data.id, [null], data.value, this.defaultOpen, 0);
-		root.children = this.filterIds(data.children);
-		this.tree.set(root.id, root);
-
-		if (data.children) this.appendChildren(this.tree, root.addr, data.children, 1);
-	}
-
-	appendChildren(map: Tree<Node['id'], Node>, parentAddr: Node['addr'], children, top) {
-		children.forEach((child) => {
-			const node = new Node(child.id, parentAddr, child.value, this.defaultOpen, top);
-
-			if (map && node) {
-				map.store(node.id, node);
-			}
-
-			if (Object.hasOwn(child, 'children') && child.children.length > 0) {
-				node.children = this.filterIds(child.children);
-				return this.appendChildren(map, node.addr, child.children, top + 1);
-			}
-		});
-	}
-
-	recursiveRemap(childrenKeys: [], container = []) {
-		for (const key of childrenKeys) {
-			container.push(key);
-			const childNode = this.tree.get(key);
+	recursiveRemap(children: Node[], container = []) {
+		for (const child of children) {
+			container.push(child.id);
+			const childNode = this.tree.get(child.id);
 
 			if (childNode.open) this.recursiveRemap(childNode.children, container);
 		}
 
 		return container;
+	}
+
+	get(id) {
+		return this.tree.get(id);
 	}
 
 	parse(position: number = this.position) {
@@ -137,22 +125,19 @@ export class VirtualTree extends VirtualComponent {
 		return this.tree.range(start, display + start).filter((n: Node) => n !== undefined);
 	}
 
-	toggle(id) {
-		const node = this.tree.get(id);
+	toggle(id: Node['id']) {
+		const node = this.get(id);
 		if (node && !node.isLeaf) {
-			const isOpen = node.open;
-			if (isOpen) {
+			if (node.open) {
 				node.open = false;
-				const nodesToClose = this.recursiveRemap(node.children);
-				this.tree.remap(node.id, nodesToClose.length);
-				this.height = this.tree.size;
+
+				this.tree.remap(node.id, this.recursiveRemap(node.children).length);
 			} else {
 				node.open = true;
 				this.tree.remap(node.id, 0, this.recursiveRemap(node.children));
-				this.height = this.tree.size;
 			}
-		}
 
-		// add position
+			this.height = this.tree.size;
+		}
 	}
 }
