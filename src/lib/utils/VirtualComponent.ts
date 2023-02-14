@@ -1,4 +1,5 @@
 import { isPromise } from './isPromise';
+import { debounce } from './debounce';
 
 export abstract class VirtualComponent {
 	data: App.DataObject[];
@@ -59,20 +60,22 @@ export abstract class VirtualComponent {
 	}
 
 	getChunk(event: App.Ev) {
-		const target = event.target || event;
-		this.position = target.scrollTop;
+		return debounce(() => {
+			const target = event.target || event;
+			this.position = target.scrollTop;
 
-		if (this.tresholdPassed(target)) {
-			if (this.maxFeeds === false) {
-				this.unwrapNextData();
+			if (this.tresholdPassed(target)) {
+				if (this.maxFeeds === false) {
+					this.unwrapNextData();
+				}
+
+				if (typeof this.maxFeeds === 'number' && this.maxFeeds > 0) {
+					this.maxFeeds--;
+					this.unwrapNextData();
+				}
 			}
 
-			if (typeof this.maxFeeds === 'number' && this.maxFeeds > 0) {
-				this.maxFeeds--;
-				this.unwrapNextData();
-			}
-		}
-
-		return this.parse(this.position);
+			return this.parse(this.position);
+		})();
 	}
 }
