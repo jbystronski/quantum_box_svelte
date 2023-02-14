@@ -48,5 +48,6 @@
 		"svelte tree",
 		"virtual tree"
 	],
-	"type": "module"
+	"type": "module",
+	"license": "MIT"
 }
