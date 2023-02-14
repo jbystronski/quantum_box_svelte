@@ -4,7 +4,7 @@
 	import { createOneLevelData, createManyLevelData } from '../tests/fixtures/data';
 	import Grid from '$lib/components/Grid.svelte';
 	import List from '$lib/components/List.svelte';
-	import Tree from '$lib/components/Tree.svelte';
+	import { Tree } from '../lib/index';
 	import ListItem from './ListItem.svelte';
 	import TreeItem from './TreeItem.svelte';
 	import DefaultItem from '$lib/components/DefaultItem.svelte';
